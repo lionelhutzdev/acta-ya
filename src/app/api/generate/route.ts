@@ -29,6 +29,23 @@ function checkRateLimit(ip: string): boolean {
   return true
 }
 
+const MAX_LENGTHS = {
+  condominio_nombre: 200,
+  tipo_asamblea: 20,
+  fecha: 10,
+  hora_inicio: 5,
+  hora_fin: 5,
+  lugar: 300,
+  quorum_info: 300,
+  agenda: 3000,
+  notas: 5000,
+}
+
+function sanitize(value: unknown, maxLen: number): string {
+  if (typeof value !== 'string') return ''
+  return value.trim().slice(0, maxLen)
+}
+
 export async function POST(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
 
@@ -39,26 +56,54 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const { actaId, form } = await request.json()
+  let body: Record<string, unknown>
   try {
-    const fechaFormateada = new Date(form.fecha + 'T12:00:00').toLocaleDateString('es-AR', {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Solicitud inválida.' }, { status: 400 })
+  }
+
+  const { actaId, form: rawForm } = body
+  if (!actaId || typeof rawForm !== 'object' || rawForm === null) {
+    return NextResponse.json({ error: 'Solicitud inválida.' }, { status: 400 })
+  }
+
+  const form = rawForm as Record<string, unknown>
+  const clean = {
+    condominio_nombre: sanitize(form.condominio_nombre, MAX_LENGTHS.condominio_nombre),
+    tipo_asamblea: sanitize(form.tipo_asamblea, MAX_LENGTHS.tipo_asamblea),
+    fecha: sanitize(form.fecha, MAX_LENGTHS.fecha),
+    hora_inicio: sanitize(form.hora_inicio, MAX_LENGTHS.hora_inicio),
+    hora_fin: sanitize(form.hora_fin, MAX_LENGTHS.hora_fin),
+    lugar: sanitize(form.lugar, MAX_LENGTHS.lugar),
+    quorum_info: sanitize(form.quorum_info, MAX_LENGTHS.quorum_info),
+    agenda: sanitize(form.agenda, MAX_LENGTHS.agenda),
+    notas: sanitize(form.notas, MAX_LENGTHS.notas),
+  }
+
+  if (!clean.condominio_nombre || !clean.fecha || !clean.hora_inicio || !clean.lugar || !clean.agenda || !clean.notas) {
+    return NextResponse.json({ error: 'Faltan campos obligatorios.' }, { status: 400 })
+  }
+
+  try {
+    const fechaFormateada = new Date(clean.fecha + 'T12:00:00').toLocaleDateString('es-AR', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     })
 
     const prompt = `Sos un escribano público argentino especializado en actas de asambleas de consorcios. Redactá un acta formal y completa con los siguientes datos:
 
 **Datos de la asamblea:**
-- Condominio: ${form.condominio_nombre}
-- Tipo de asamblea: ${form.tipo_asamblea}
+- Condominio: ${clean.condominio_nombre}
+- Tipo de asamblea: ${clean.tipo_asamblea}
 - Fecha: ${fechaFormateada}
-- Hora de inicio: ${form.hora_inicio}hs${form.hora_fin ? `\n- Hora de cierre: ${form.hora_fin}hs` : ''}
-- Lugar: ${form.lugar}${form.quorum_info ? `\n- Quórum: ${form.quorum_info}` : ''}
+- Hora de inicio: ${clean.hora_inicio}hs${clean.hora_fin ? `\n- Hora de cierre: ${clean.hora_fin}hs` : ''}
+- Lugar: ${clean.lugar}${clean.quorum_info ? `\n- Quórum: ${clean.quorum_info}` : ''}
 
 **Orden del día:**
-${form.agenda}
+${clean.agenda}
 
 **Notas de la reunión:**
-${form.notas}
+${clean.notas}
 
 Redactá el acta completa en castellano rioplatense con formato legal: encabezado formal, desarrollo de cada punto del orden del día incorporando las notas provistas, resoluciones adoptadas con indicación de votación cuando corresponda, y cierre con firma. Usá párrafos formales, numeración de artículos y lenguaje técnico jurídico apropiado para un consorcio de propietarios.`
 
@@ -76,8 +121,7 @@ Redactá el acta completa en castellano rioplatense con formato legal: encabezad
       .eq('id', actaId)
 
     return NextResponse.json({ contenido })
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Error generando el acta'
-    return NextResponse.json({ error: msg }, { status: 500 })
+  } catch {
+    return NextResponse.json({ error: 'Error generando el acta. Intentá de nuevo.' }, { status: 500 })
   }
 }
