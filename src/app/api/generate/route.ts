@@ -9,7 +9,36 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+// In-memory rate limiter: 5 requests per IP per hour
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT = 5
+const RATE_WINDOW_MS = 60 * 60 * 1000 // 1 hour
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitMap.get(ip)
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
+    return true
+  }
+
+  if (entry.count >= RATE_LIMIT) return false
+
+  entry.count++
+  return true
+}
+
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
+
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: 'Límite alcanzado. Podés generar hasta 5 actas por hora.' },
+      { status: 429 }
+    )
+  }
+
   const { actaId, form } = await request.json()
   try {
     const fechaFormateada = new Date(form.fecha + 'T12:00:00').toLocaleDateString('es-AR', {
@@ -36,7 +65,7 @@ Redactá el acta completa en castellano rioplatense con formato legal: encabezad
     const completion = await groq.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 4096,
+      max_tokens: 2048,
     })
 
     const contenido = completion.choices[0].message.content ?? ''
