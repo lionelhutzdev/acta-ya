@@ -64,7 +64,7 @@ export default function ActaForm() {
 
     if (error) {
       setStatus('error')
-      setErrorMsg(error.message)
+      setErrorMsg('No se pudo guardar el acta. Intentá de nuevo.')
       return
     }
 

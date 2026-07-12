@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
 import { createClient } from '@supabase/supabase-js'
 
+const REQUIRED_ENV = ['GROQ_API_KEY', 'NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY'] as const
+for (const key of REQUIRED_ENV) {
+  if (!process.env[key]) throw new Error(`Missing required environment variable: ${key}`)
+}
+
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 const supabase = createClient(
@@ -111,7 +116,7 @@ Redactá el acta completa en castellano rioplatense con formato legal: encabezad
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 2048,
-    })
+    }, { timeout: 30000 })
 
     const contenido = completion.choices[0].message.content ?? ''
 
@@ -121,7 +126,12 @@ Redactá el acta completa en castellano rioplatense con formato legal: encabezad
       .eq('id', actaId)
 
     return NextResponse.json({ contenido })
-  } catch {
+  } catch (err) {
+    console.error('[generate] Error:', err instanceof Error ? err.message : err)
+    // Clean up orphaned row if generation failed
+    if (actaId) {
+      await supabase.from('actas').delete().eq('id', actaId).is('contenido_generado', null)
+    }
     return NextResponse.json({ error: 'Error generando el acta. Intentá de nuevo.' }, { status: 500 })
   }
 }
