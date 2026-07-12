@@ -61,12 +61,17 @@ export default function Terminos() {
           </section>
 
           <section>
-            <h2 className="font-semibold text-gray-900 mb-2">7. Modificaciones</h2>
+            <h2 className="font-semibold text-gray-900 mb-2">7. Ley aplicable y jurisdicción</h2>
+            <p>Estos términos se rigen por las leyes de la República de Costa Rica. Para cualquier controversia, las partes se someten a la jurisdicción de los tribunales costarricenses. El contenido generado por el servicio hace referencia a la normativa argentina (Ley 13.512 derogada, Código Civil y Comercial) únicamente como referencia para la redacción de los borradores; Acta Ya no ejerce ni representa la aplicación oficial de dicha normativa.</p>
+          </section>
+
+          <section>
+            <h2 className="font-semibold text-gray-900 mb-2">8. Modificaciones</h2>
             <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. El uso continuado del servicio implica la aceptación de los términos vigentes.</p>
           </section>
 
           <section>
-            <h2 className="font-semibold text-gray-900 mb-2">8. Contacto</h2>
+            <h2 className="font-semibold text-gray-900 mb-2">9. Contacto</h2>
             <p>Para consultas sobre estos términos escribí a <a href="mailto:leolink17@gmail.com" className="text-indigo-600 hover:underline">leolink17@gmail.com</a>.</p>
           </section>
 
