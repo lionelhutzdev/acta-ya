@@ -125,6 +125,10 @@ export default function ActaForm() {
             </div>
           </div>
 
+          <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-4 text-xs text-amber-800">
+            <strong>Borrador generado por IA.</strong> Este texto es un punto de partida. Revisalo, corregilo y asegurate de que todos los participantes lo firmen antes de darle validez legal. No constituye asesoría jurídica profesional.
+          </div>
+
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-4">
             <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono leading-relaxed">{generatedContent}</pre>
           </div>
