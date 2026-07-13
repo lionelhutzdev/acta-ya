@@ -16,6 +16,18 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Acta Ya — Borradores de actas de asamblea con IA",
   description: "Completá los datos de tu asamblea y obtené un borrador de acta generado con inteligencia artificial para revisar y firmar.",
+  openGraph: {
+    title: "Acta Ya — Borradores de actas de asamblea con IA",
+    description: "Completá los datos de tu asamblea y obtené un borrador de acta generado con inteligencia artificial para revisar y firmar.",
+    siteName: "Acta Ya",
+    type: "website",
+    locale: "es_AR",
+  },
+  twitter: {
+    card: "summary",
+    title: "Acta Ya — Borradores de actas de asamblea con IA",
+    description: "Completá los datos de tu asamblea y obtené un borrador de acta generado con inteligencia artificial para revisar y firmar.",
+  },
 };
 
 export default function RootLayout({

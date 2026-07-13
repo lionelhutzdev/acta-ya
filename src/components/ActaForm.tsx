@@ -47,9 +47,17 @@ export default function ActaForm() {
     setErrorMsg('')
     setGeneratedContent('')
 
-    const { data, error } = await supabase
+    // Generate the id client-side and skip `.select()` on the insert: the
+    // `actas` table intentionally has no SELECT policy for anon (nobody
+    // should be able to read someone else's acta), but Postgres RLS requires
+    // a SELECT policy to satisfy a RETURNING clause — so `.select().single()`
+    // after insert would fail RLS entirely, even for the user's own row.
+    const actaId = crypto.randomUUID()
+
+    const { error } = await supabase
       .from('actas')
       .insert({
+        id: actaId,
         condominio_nombre: form.condominio_nombre,
         tipo_asamblea: form.tipo_asamblea,
         fecha: form.fecha,
@@ -60,8 +68,6 @@ export default function ActaForm() {
         agenda: form.agenda,
         notas: form.notas,
       })
-      .select('id')
-      .single()
 
     if (error) {
       setStatus('error')
@@ -75,7 +81,7 @@ export default function ActaForm() {
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ actaId: data.id, form }),
+        body: JSON.stringify({ actaId, form }),
       })
 
       if (!res.ok) {

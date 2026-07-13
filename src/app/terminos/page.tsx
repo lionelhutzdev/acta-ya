@@ -52,7 +52,7 @@ export default function Terminos() {
 
           <section>
             <h2 className="font-semibold text-gray-900 mb-2">5. Disponibilidad del servicio</h2>
-            <p>El servicio se presta "tal como está" y "según disponibilidad". No garantizamos disponibilidad ininterrumpida. Nos reservamos el derecho de modificar, suspender o discontinuar el servicio en cualquier momento sin previo aviso.</p>
+            <p>El servicio se presta &quot;tal como está&quot; y &quot;según disponibilidad&quot;. No garantizamos disponibilidad ininterrumpida. Nos reservamos el derecho de modificar, suspender o discontinuar el servicio en cualquier momento sin previo aviso.</p>
           </section>
 
           <section>
