@@ -14,3 +14,5 @@ create table actas (
   lemonsqueezy_order_id text,
   created_at timestamptz default now()
 );
+
+-- Ver supabase-rls.sql para la tabla rate_limit_log (rate limiting de /api/generate)

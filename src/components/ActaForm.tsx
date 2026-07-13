@@ -35,6 +35,7 @@ export default function ActaForm() {
   const [errorMsg, setErrorMsg] = useState('')
   const [generatedContent, setGeneratedContent] = useState('')
   const [copied, setCopied] = useState(false)
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
 
   function set(field: keyof FormData, value: string) {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -86,6 +87,7 @@ export default function ActaForm() {
       setGeneratedContent(contenido)
       setStatus('success')
       setForm(EMPTY)
+      setAcceptedTerms(false)
     } catch (err) {
       setStatus('error')
       setErrorMsg(err instanceof Error ? err.message : 'Error generando el acta.')
@@ -341,9 +343,23 @@ export default function ActaForm() {
             </div>
           )}
 
+          <label className="flex items-start gap-2.5 text-sm text-gray-600 cursor-pointer">
+            <input
+              type="checkbox"
+              required
+              checked={acceptedTerms}
+              onChange={e => setAcceptedTerms(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 shrink-0"
+            />
+            <span>
+              Acepto los <a href="/terminos" target="_blank" className="text-indigo-600 hover:underline">Términos de Uso</a> y la{' '}
+              <a href="/privacidad" target="_blank" className="text-indigo-600 hover:underline">Política de Privacidad</a>, incluyendo el envío de estos datos a Groq (EE.UU.) para su procesamiento.
+            </span>
+          </label>
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !acceptedTerms}
             className="w-full bg-indigo-600 text-white py-3 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {status === 'saving' ? (
