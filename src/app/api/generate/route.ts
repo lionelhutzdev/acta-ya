@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
 import { createClient } from '@supabase/supabase-js'
+import * as Sentry from '@sentry/nextjs'
 
 const REQUIRED_ENV = ['GROQ_API_KEY', 'NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'] as const
 for (const key of REQUIRED_ENV) {
@@ -35,7 +36,7 @@ async function checkAndLogRateLimit(ip: string): Promise<boolean> {
     .gte('created_at', windowStart)
 
   if (error) {
-    console.error('[rate-limit] Error checking limit:', error.message)
+    Sentry.captureException(error, { tags: { area: 'rate-limit' }, extra: { ip } })
     return false // fail closed: a DB error should not turn into free unlimited generations
   }
 
@@ -147,13 +148,16 @@ Redactá el acta completa en castellano rioplatense con formato legal: encabezad
       .select('id')
 
     if (updateError || !updated || updated.length === 0) {
-      console.error('[generate] Failed to persist content:', updateError?.message ?? 'no matching empty row for actaId')
+      Sentry.captureException(updateError ?? new Error('no matching empty row for actaId'), {
+        tags: { area: 'generate-persist' },
+        extra: { actaId },
+      })
       return NextResponse.json({ error: 'Error generando el acta. Intentá de nuevo.' }, { status: 500 })
     }
 
     return NextResponse.json({ contenido })
   } catch (err) {
-    console.error('[generate] Error:', err instanceof Error ? err.message : err)
+    Sentry.captureException(err, { tags: { area: 'generate' }, extra: { actaId } })
     // Clean up orphaned row if generation failed
     if (actaId) {
       await supabase.from('actas').delete().eq('id', actaId).is('contenido_generado', null)
