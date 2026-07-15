@@ -72,7 +72,7 @@ export default function Terminos() {
 
           <section>
             <h2 className="font-semibold text-gray-900 mb-2">9. Contacto</h2>
-            <p>Para consultas sobre estos términos escribí a <a href="mailto:leolink17@gmail.com" className="text-indigo-600 hover:underline">leolink17@gmail.com</a>.</p>
+            <p>Para consultas sobre estos términos escribí a <a href="mailto:lionelhutzdev@gmail.com" className="text-indigo-600 hover:underline">lionelhutzdev@gmail.com</a>.</p>
           </section>
 
         </div>

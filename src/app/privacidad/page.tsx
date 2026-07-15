@@ -26,7 +26,7 @@ export default function Privacidad() {
 
           <section>
             <h2 className="font-semibold text-gray-900 mb-2">1. Responsable del tratamiento</h2>
-            <p>El responsable del tratamiento de los datos es el titular del servicio Acta Ya, con domicilio en Costa Rica. Contacto: <a href="mailto:leolink17@gmail.com" className="text-indigo-600 hover:underline">leolink17@gmail.com</a>. El tratamiento de datos personales se rige por la <strong>Ley N° 8968 de Protección de la Persona frente al Tratamiento de sus Datos Personales</strong> de Costa Rica y su reglamento.</p>
+            <p>El responsable del tratamiento de los datos es el titular del servicio Acta Ya, con domicilio en Costa Rica. Contacto: <a href="mailto:lionelhutzdev@gmail.com" className="text-indigo-600 hover:underline">lionelhutzdev@gmail.com</a>. El tratamiento de datos personales se rige por la <strong>Ley N° 8968 de Protección de la Persona frente al Tratamiento de sus Datos Personales</strong> de Costa Rica y su reglamento.</p>
           </section>
 
           <section>
@@ -77,7 +77,7 @@ export default function Privacidad() {
               <li><strong>Supresión:</strong> solicitar el borrado de tus datos cuando ya no sean necesarios.</li>
               <li><strong>Oposición:</strong> oponerte a determinados tratamientos.</li>
             </ul>
-            <p className="mt-2">Para ejercer estos derechos, escribí a <a href="mailto:leolink17@gmail.com" className="text-indigo-600 hover:underline">leolink17@gmail.com</a>. Respondemos en un plazo máximo de 5 días hábiles. El organismo de control en Costa Rica es la <strong>Agencia de Protección de Datos de los Habitantes (PRODHAB)</strong>: <a href="https://www.prodhab.go.cr" className="text-indigo-600 hover:underline" target="_blank" rel="noopener noreferrer">prodhab.go.cr</a>.</p>
+            <p className="mt-2">Para ejercer estos derechos, escribí a <a href="mailto:lionelhutzdev@gmail.com" className="text-indigo-600 hover:underline">lionelhutzdev@gmail.com</a>. Respondemos en un plazo máximo de 5 días hábiles. El organismo de control en Costa Rica es la <strong>Agencia de Protección de Datos de los Habitantes (PRODHAB)</strong>: <a href="https://www.prodhab.go.cr" className="text-indigo-600 hover:underline" target="_blank" rel="noopener noreferrer">prodhab.go.cr</a>.</p>
           </section>
 
           <section>
